@@ -1,12 +1,17 @@
-export async function graphql<TResponse, TVariables = undefined>(
+export async function graphql<TResponse, TVariables = Record<string, unknown>>(
   query: string,
   variables?: TVariables
 ): Promise<TResponse> {
+  const token = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('token='))
+  ?.split('=')[1];
+
   const res = await fetch('http://localhost:4000/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('token') : ''}`,
+      Authorization: `Bearer ${typeof window !== 'undefined' ? token : ''}`,
     },
     body: JSON.stringify({ query, variables }),
   });

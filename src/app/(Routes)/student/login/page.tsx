@@ -1,4 +1,4 @@
-import StudentLoginPage from "@/app/Screens/Auth/StudentLogin";
+import StudentLoginPage from "@/app/Screens/Student/StudentLogin";
 export default function StudentLogin(){
     return <StudentLoginPage/>;
 }

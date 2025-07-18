@@ -1,7 +1,8 @@
 'use client'
-import LoginForm from '../../components/LoginForm';
+import LoginTitle from '@/components/Auth/LoginTitle';
+import LoginForm from '@/components/Auth/LoginForm';
 
-export default function AdminLoginPage() {
+export default function StudentLoginPage() {
   const handleLogin = async (email: string, password: string) => {
     const res = await fetch('http://localhost:4000/graphql', {
       method: 'POST',
@@ -20,15 +21,22 @@ export default function AdminLoginPage() {
         `,
       }),
     });
-
+ 
     const { data } = await res.json();
     if (data?.login?.token) {
       document.cookie = `token=${data.login.token}; path=/`;
-      window.location.href = '/admin';
+      window.location.href = '/student/dashboard';
     } else {
       throw new Error('Login failed');
     }
   };
 
-  return <LoginForm title="Admin Login" onSubmit={handleLogin} />;
+  return (
+  <div className="flex justify-center items-center min-h-screen bg-gray-100">
+  <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <LoginTitle/>
+    <LoginForm title="Student Login" onSubmit={handleLogin} />
+  </div>
+</div>
+);
 }
