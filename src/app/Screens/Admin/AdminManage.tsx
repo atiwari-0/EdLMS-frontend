@@ -1,7 +1,18 @@
 import EntitySection from "@/components/Admin/EntitySection";
 import {
-  CREATE_STUDENT, CREATE_TEACHER, CREATE_CLASSROOM, CREATE_SUBJECT,
-} from "@/graphql/mutations";
+  CREATE_STUDENT,
+  UPDATE_STUDENT,
+  DELETE_STUDENT,
+  CREATE_TEACHER,
+  UPDATE_TEACHER,
+  DELETE_TEACHER,
+  CREATE_SUBJECT,
+  UPDATE_SUBJECT,
+  DELETE_SUBJECT,
+  CREATE_CLASSROOM,
+  UPDATE_CLASSROOM,
+  DELETE_CLASSROOM
+} from '@/graphql/mutations';
 import {
     GET_CLASSES, GET_STUDENTS, GET_SUBJECTS, GET_TEACHERS,
 } from '@/graphql/queries';
@@ -12,6 +23,8 @@ export default function ManagePage() {
         title="Students"
         fetchQuery={GET_STUDENTS}
         createMutation={CREATE_STUDENT}
+        updateMutation={UPDATE_STUDENT}
+        deleteMutation={DELETE_STUDENT}
         fields={["name","classId"]}
       />
 
@@ -19,6 +32,8 @@ export default function ManagePage() {
         title="Teachers"
         fetchQuery={GET_TEACHERS}
         createMutation={CREATE_TEACHER}
+        updateMutation={UPDATE_TEACHER}
+        deleteMutation={DELETE_TEACHER}
         fields={["name","subjectId", "classIds"]}
       />
 
@@ -26,6 +41,8 @@ export default function ManagePage() {
         title="Classes"
         fetchQuery={GET_CLASSES}
         createMutation={CREATE_CLASSROOM}
+        updateMutation={UPDATE_CLASSROOM}
+        deleteMutation={DELETE_CLASSROOM}
         fields={["name"]}
       />
 
@@ -33,6 +50,8 @@ export default function ManagePage() {
         title="Subjects"
         fetchQuery={GET_SUBJECTS}
         createMutation={CREATE_SUBJECT}
+        updateMutation={UPDATE_SUBJECT}
+        deleteMutation={DELETE_SUBJECT}
         fields={["name"]}
       />
     </div>

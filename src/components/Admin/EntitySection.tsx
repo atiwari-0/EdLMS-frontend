@@ -10,8 +10,8 @@ interface EntitySectionProps {
   title: EntityType;
   fetchQuery: string;
   createMutation: string;
-  updateMutation?: string;
-  deleteMutation?: string;
+  updateMutation: string;
+  deleteMutation: string;
   fields: (keyof EntityData)[];
 }
 
@@ -117,6 +117,9 @@ export default function EntitySection({
       return;
     }
 
+    const confirmed = window.confirm('Are you sure you want to delete this item?');
+    if (!confirmed) return;
+
     try {
       await graphql(deleteMutation, { id });
       setItems(prev => prev.filter(item => item.id !== id));
@@ -196,22 +199,24 @@ export default function EntitySection({
 }
 
 function buildInputData(type: EntityType, data: EntityData) {
+  const base = {
+    ...(data.id && { id: data.id }), 
+    name: data.name,
+  };
   switch (type) {
     case 'Students':
       return {
-        name: data.name,
-        email: data.email,
+        ...base,
         classId: data.classId,
       };
     case 'Teachers':
       return {
-        name: data.name,
-        email: data.email,
+        ...base,
         subjectId: data.subjectId,
         classIds: data.classIds,
       };
     default:
-      return { name: data.name };
+      return base;
   }
 }
 
