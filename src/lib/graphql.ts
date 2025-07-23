@@ -9,6 +9,7 @@ export async function graphql<TResponse, TVariables = Record<string, unknown>>(
 
   const res = await fetch('http://localhost:4000/graphql', {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${typeof window !== 'undefined' ? token : ''}`,

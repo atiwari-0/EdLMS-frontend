@@ -12,6 +12,12 @@ export async function middleware(req: NextRequest) {
 
   const token = req.cookies.get('token')?.value;
 
+  const dashboardPaths = {
+          ADMIN: '/admin/dashboard',
+          TEACHER: '/teacher/dashboard',
+          STUDENT: '/student/dashboard'
+        };
+
   const publicPaths = [
     '/admin/login',
     '/teacher/login',
@@ -27,12 +33,6 @@ export async function middleware(req: NextRequest) {
         const { payload } = await jwtVerify(token, secret);
         const role = payload.role as Role;
         
-        const dashboardPaths = {
-          ADMIN: '/admin/dashboard',
-          TEACHER: '/teacher/dashboard',
-          STUDENT: '/student/dashboard'
-        };
-
         return NextResponse.redirect(new URL(dashboardPaths[role], req.url));
       } catch {
         const response = NextResponse.next();
@@ -63,7 +63,7 @@ export async function middleware(req: NextRequest) {
 
     for (const [path, requiredRole] of Object.entries(protectedPaths)) {
       if (pathname.startsWith(path) && role !== requiredRole) {
-        return NextResponse.redirect(new URL('/unauthorized', req.url));
+        return NextResponse.redirect(new URL(dashboardPaths[role], req.url));
       }
     }
 

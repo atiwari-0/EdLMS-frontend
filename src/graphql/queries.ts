@@ -65,3 +65,192 @@ export const GET_CLASSES = `
     }
   }
 `;
+
+export const GET_STUDENT_PROFILE = `
+  query GetStudentProfile($id: ID!) {
+    getStudentProfile(id: $id) {
+      id
+      user {
+        id
+        name
+        email
+        role
+      }
+      class {
+        id
+        name
+      }
+      attendances {
+        id
+        session {
+          id
+          title
+        }
+        status
+      }
+      payments {
+        id
+        amount
+        dueDate
+        status
+        paidAt
+      }
+      doubts {
+        id
+        title
+        content
+        status
+        createdAt
+        subject {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const GET_STUDENT_COURSES = `
+  query GetStudentCourses($studentId: ID!) {
+    getStudentCourses(studentId: $studentId) {
+      id
+      title
+      description
+      subject {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_COURSE_NOTES = `
+  query GetCourseNotes($courseId: ID!) {
+    getCourseNotes(courseId: $courseId) {
+      id
+      title
+      fileUrl
+      uploadedAt
+    }
+  }
+`;
+
+export const GET_COURSE_SESSIONS = `
+  query GetCourseSessions($courseId: ID!) {
+    getCourseSessions(courseId: $courseId) {
+      id
+      title
+      startTime
+      endTime
+      isLive
+      link
+      status
+    }
+  }
+`;
+
+export const GET_STUDENT_ATTENDANCE = `
+  query GetStudentAttendance($studentId: ID!) {
+    getStudentAttendance(studentId: $studentId) {
+      id
+      session {
+        id
+        title
+      }
+      status
+    }
+  }
+`;
+
+export const GET_STUDENT_PAYMENTS = `
+  query GetStudentPayments($studentId: ID!) {
+    getStudentPayments(studentId: $studentId) {
+      id
+      amount
+      dueDate
+      status
+      paidAt
+    }
+  }
+`;
+
+export const GET_LIVE_SESSIONS = `
+  query GetLiveSessions($studentId: ID!) {
+    getLiveSessions(studentId: $studentId) {
+      id
+      title
+      startTime
+      endTime
+      link
+      status
+      isLive
+    }
+  }
+`;
+
+export const GET_TEACHER_PROFILE = `
+  query GetTeacherProfile($id: ID!) {
+    getTeacherProfile(id: $id) {
+      id
+      user {
+        id
+        name
+        email
+      }
+      subject {
+        id
+        name
+      }
+      classes {
+        id
+        name
+      }
+      courses {
+        id
+        title
+        description
+      }
+    }
+  }
+`;
+
+export const GET_TEACHER_COURSES = `
+  query GetTeacherCourses($teacherId: ID!) {
+    getTeacherCourses(teacherId: $teacherId) {
+      id
+      title
+      description
+      subject {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_TEACHER_DOUBTS = `
+  query GetTeacherDoubts($teacherId: ID!) {
+    getTeacherDoubts(teacherId: $teacherId) {
+      id
+      title
+      content
+      createdAt
+      status
+      subject {
+        id
+        name
+      }
+      student {
+        id
+        user {
+          id
+          name
+        }
+        class {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
