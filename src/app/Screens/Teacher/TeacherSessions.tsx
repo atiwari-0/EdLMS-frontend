@@ -7,7 +7,7 @@ import {
   GET_TEACHER_SESSIONS,
   ME,
 } from "@/graphql/queries";
-import { Calendar, momentLocalizer,View } from "react-big-calendar";
+import { Calendar, momentLocalizer,View,ToolbarProps } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {
@@ -218,7 +218,7 @@ export default function TeacherSessionsPage() {
     }
   };
 
-const CustomToolbar = ({ label, onNavigate, onView }: any) => (
+const CustomToolbar = ({ label, onNavigate, onView }: ToolbarProps<CalendarEvent, object>) => (
   <div className="rbc-toolbar flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
     <div className="rbc-btn-group space-x-2">
       <Button variant="outline" size="sm" onClick={() => onNavigate('PREV')}>

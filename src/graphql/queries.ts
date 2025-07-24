@@ -110,9 +110,19 @@ export const GET_STUDENT_PROFILE = `
   }
 `;
 
-export const GET_STUDENT_COURSES = `
-  query GetStudentCourses($studentId: ID!) {
-    getStudentCourses(studentId: $studentId) {
+export const GET_STUDENT_SUBJECTS = `
+  query GetStudentSubjects($studentId: ID!) {
+    getStudentSubjects(studentId: $studentId) {
+      id
+      name
+    }
+  }
+`;
+
+
+export const GET_STUDENT_COURSES_BY_SUBJECT = `
+  query GetStudentCoursesBySubject($studentId: ID!, $subjectId: ID!) {
+    getStudentCoursesBySubject(studentId: $studentId, subjectId: $subjectId) {
       id
       title
       description
@@ -120,13 +130,26 @@ export const GET_STUDENT_COURSES = `
         id
         name
       }
+      teacher {
+        id
+        user {
+          id
+          name
+        }
+      }
+      sessions {
+        id
+        title
+        startTime
+        endTime
+      }
     }
   }
 `;
 
-export const GET_STUDENT_COURSE_NOTES = `
-  query GetStudentCourseNotes($courseId: ID!) {
-    getStudentCourseNotes(courseId: $courseId) {
+export const GET_COURSE_NOTES = `
+  query GetCourseNotes($courseId: ID!) {
+    getCourseNotes(courseId: $courseId) {
       id
       title
       fileUrl
@@ -134,6 +157,7 @@ export const GET_STUDENT_COURSE_NOTES = `
     }
   }
 `;
+
 
 export const GET_STUDENT_COURSE_SESSIONS = `
   query GetStudentCourseSessions($courseId: ID!) {

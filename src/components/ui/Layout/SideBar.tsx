@@ -24,7 +24,7 @@ const navs: Record<string, NavItem[]> = {
     ],
       student: [
       { name: "Dashboard", icon: <School className="h-5 w-5" />, href: "/student/dashboard" },
-      { name: "My Courses", icon: <BookOpen className="h-5 w-5" />, href: "/student/courses" },
+      { name: "My Subjects", icon: <BookOpen className="h-5 w-5" />, href: "/student/subjects" },
       { name: "Doubts", icon: <HelpCircle className="h-5 w-5" />, href: "/student/doubts" },
     ],
 };
