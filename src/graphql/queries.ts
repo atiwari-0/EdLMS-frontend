@@ -279,3 +279,21 @@ export const GET_TEACHER_COURSE_SESSIONS = `
     }
   }
 `;
+export const GET_TEACHER_SESSIONS = `
+query GetTeacherSessions($teacherId: ID!) {
+  getTeacherSessions(teacherId: $teacherId) {
+    id
+    title
+    startTime
+    endTime
+    isLive
+    link
+    course {
+      title
+      subject {
+        name
+      }
+    }
+  }
+}
+`;
