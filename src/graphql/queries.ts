@@ -124,9 +124,9 @@ export const GET_STUDENT_COURSES = `
   }
 `;
 
-export const GET_COURSE_NOTES = `
-  query GetCourseNotes($courseId: ID!) {
-    getCourseNotes(courseId: $courseId) {
+export const GET_STUDENT_COURSE_NOTES = `
+  query GetStudentCourseNotes($courseId: ID!) {
+    getStudentCourseNotes(courseId: $courseId) {
       id
       title
       fileUrl
@@ -135,9 +135,9 @@ export const GET_COURSE_NOTES = `
   }
 `;
 
-export const GET_COURSE_SESSIONS = `
-  query GetCourseSessions($courseId: ID!) {
-    getCourseSessions(courseId: $courseId) {
+export const GET_STUDENT_COURSE_SESSIONS = `
+  query GetStudentCourseSessions($courseId: ID!) {
+    getStudentCourseSessions(courseId: $courseId) {
       id
       title
       startTime
@@ -251,6 +251,31 @@ export const GET_TEACHER_DOUBTS = `
           name
         }
       }
+    }
+  }
+`;
+
+export const GET_TEACHER_COURSE_NOTES = `
+  query GetTeacherCourseNotes($courseId: ID!) {
+    getTeacherCourseNotes(courseId: $courseId) {
+      id
+      title
+      fileUrl
+      uploadedAt
+    }
+  }
+`;
+
+export const GET_TEACHER_COURSE_SESSIONS = `
+  query GetTeacherCourseSessions($courseId: ID!) {
+    getTeacherCourseSessions(courseId: $courseId) {
+      id
+      title
+      startTime
+      endTime
+      isLive
+      link
+      status
     }
   }
 `;

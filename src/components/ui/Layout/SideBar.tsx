@@ -19,7 +19,6 @@ const navs: Record<string, NavItem[]> = {
   teacher: [
       { name: "Dashboard", icon: <School className="h-5 w-5" />, href: "/teacher/dashboard" },
       { name: "My Courses", icon: <BookOpen className="h-5 w-5" />, href: "/teacher/courses" },
-      { name: "Upload Notes", icon: <FileText className="h-5 w-5" />, href: "/teacher/notes" },
       { name: "Sessions", icon: <Calendar className="h-5 w-5" />, href: "/teacher/sessions" },
       { name: "Doubts", icon: <HelpCircle className="h-5 w-5" />, href: "/teacher/doubts" },
     ],

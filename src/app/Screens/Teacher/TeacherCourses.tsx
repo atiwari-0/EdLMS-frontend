@@ -19,11 +19,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { graphql } from "@/lib/graphql";
-import { ME, GET_TEACHER_PROFILE } from "@/graphql/queries";
-import { CREATE_COURSE } from "@/graphql/mutations";
+import {
+  ME,
+  GET_TEACHER_PROFILE,
+  GET_TEACHER_COURSE_NOTES,
+} from "@/graphql/queries";
+import { CREATE_COURSE, UPLOAD_NOTE } from "@/graphql/mutations";
 
 type MeResponse = { me: { id: string; role: string; name: string } };
 type Course = { id: string; title: string; description: string };
+type Note = { id: string; title: string; fileUrl: string; uploadedAt: string };
 type TeacherProfile = {
   id: string;
   subject: { id: string; name: string };
@@ -34,11 +39,17 @@ export default function TeacherCoursesPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [teacher, setTeacher] = useState<TeacherProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
-  const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({ title: "", description: "" });
-  const [dialogOpen, setDialogOpen] = useState(false);
 
-  // 1️⃣ Fetch current user
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [form, setForm] = useState({ title: "", description: "" });
+  const [creating, setCreating] = useState(false);
+
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [notesLoading, setNotesLoading] = useState(false);
+  const [noteForm, setNoteForm] = useState({ title: "", fileUrl: "" });
+  const [showDialog, setShowDialog] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
@@ -50,15 +61,15 @@ export default function TeacherCoursesPage() {
     })();
   }, []);
 
-  // 2️⃣ Fetch teacher profile once we have userId
   useEffect(() => {
     if (!userId) return;
     (async () => {
       setLoadingProfile(true);
       try {
-        const { getTeacherProfile } = await graphql<{
-          getTeacherProfile: TeacherProfile | null;
-        }>(GET_TEACHER_PROFILE, { id: userId });
+        const { getTeacherProfile } = await graphql<{ getTeacherProfile: TeacherProfile }>(
+          GET_TEACHER_PROFILE,
+          { id: userId }
+        );
         setTeacher(getTeacherProfile);
       } catch (err) {
         console.error(err);
@@ -68,7 +79,6 @@ export default function TeacherCoursesPage() {
     })();
   }, [userId]);
 
-  // 3️⃣ Handle creating a new course
   const handleCreate = async () => {
     if (!teacher) return;
     setCreating(true);
@@ -79,7 +89,6 @@ export default function TeacherCoursesPage() {
         subjectId: teacher.subject.id,
         teacherId: teacher.id,
       });
-      // re-fetch profile to update courses
       const { getTeacherProfile } = await graphql<{ getTeacherProfile: TeacherProfile }>(
         GET_TEACHER_PROFILE,
         { id: userId! }
@@ -94,12 +103,48 @@ export default function TeacherCoursesPage() {
     }
   };
 
+  const openCourseDetails = async (course: Course) => {
+    setSelectedCourse(course);
+    setShowDialog(true);
+    setNotesLoading(true);
+    try {
+      const res = await graphql<{ getTeacherCourseNotes: Note[] }>(
+        GET_TEACHER_COURSE_NOTES,
+        { courseId: course.id }
+      );
+      setNotes(res.getTeacherCourseNotes);
+    } catch (err) {
+      console.error("Failed to load notes:", err);
+    } finally {
+      setNotesLoading(false);
+    }
+  };
+
+  const handleNoteUpload = async () => {
+    if (!selectedCourse) return;
+    try {
+      await graphql(UPLOAD_NOTE, {
+        courseId: selectedCourse.id,
+        title: noteForm.title,
+        fileUrl: noteForm.fileUrl,
+      });
+      const res = await graphql<{ getTeacherCourseNotes: Note[] }>(
+        GET_TEACHER_COURSE_NOTES,
+        { courseId: selectedCourse.id }
+      );
+      setNotes(res.getTeacherCourseNotes);
+      setNoteForm({ title: "", fileUrl: "" });
+    } catch (err) {
+      console.error("Note upload failed:", err);
+    }
+  };
+
   if (loadingProfile) return <div className="p-6">Loading your profile…</div>;
   if (!teacher) return <div className="p-6 text-red-500">Teacher profile not found.</div>;
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header + Add Course */}
+      {/* Header + Create Course */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">My Courses</h2>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -139,7 +184,7 @@ export default function TeacherCoursesPage() {
         <span className="text-lg">{teacher.subject.name}</span>
       </div>
 
-      {/* Courses Table */}
+      {/* Course List */}
       {teacher.courses.length === 0 ? (
         <p>No courses yet—create one above!</p>
       ) : (
@@ -152,7 +197,7 @@ export default function TeacherCoursesPage() {
           </TableHeader>
           <TableBody>
             {teacher.courses.map((c) => (
-              <TableRow key={c.id}>
+              <TableRow key={c.id} onClick={() => openCourseDetails(c)} className="cursor-pointer">
                 <TableCell>{c.title}</TableCell>
                 <TableCell>{c.description}</TableCell>
               </TableRow>
@@ -160,6 +205,62 @@ export default function TeacherCoursesPage() {
           </TableBody>
         </Table>
       )}
+
+      {/* Course Detail Dialog */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>{selectedCourse?.title}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <p className="text-muted-foreground">{selectedCourse?.description}</p>
+
+            <h3 className="font-semibold mt-4">Upload Note</h3>
+            <div className="space-y-2">
+              <Input
+                placeholder="Note Title"
+                value={noteForm.title}
+                onChange={(e) => setNoteForm((f) => ({ ...f, title: e.target.value }))}
+              />
+              <Input
+                placeholder="File URL"
+                value={noteForm.fileUrl}
+                onChange={(e) => setNoteForm((f) => ({ ...f, fileUrl: e.target.value }))}
+              />
+              <Button
+                onClick={handleNoteUpload}
+                disabled={!noteForm.title || !noteForm.fileUrl}
+              >
+                Upload
+              </Button>
+            </div>
+
+            <h3 className="font-semibold mt-6">All Notes</h3>
+            {notesLoading ? (
+              <p>Loading notes…</p>
+            ) : notes.length === 0 ? (
+              <p>No notes yet.</p>
+            ) : (
+              <ul className="space-y-1">
+                {notes.map((note) => (
+                  <li key={note.id} className="text-sm">
+                    📄{" "}
+                    <a
+                      href={note.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      {note.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
