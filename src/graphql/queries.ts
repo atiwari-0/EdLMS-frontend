@@ -159,9 +159,9 @@ export const GET_COURSE_NOTES = `
 `;
 
 
-export const GET_STUDENT_COURSE_SESSIONS = `
-  query GetStudentCourseSessions($courseId: ID!) {
-    getStudentCourseSessions(courseId: $courseId) {
+export const GET_STUDENT_SESSIONS = `
+  query GetStudentSessions($studentId: ID!) {
+    getStudentSessions(studentId: $studentId) {
       id
       title
       startTime
@@ -169,6 +169,22 @@ export const GET_STUDENT_COURSE_SESSIONS = `
       isLive
       link
       status
+      course {
+        id
+        title
+        subject {
+          id
+          name
+        }
+        teacher {
+          id
+          user {
+            id
+            name
+            email
+          }
+        }
+      }
     }
   }
 `;

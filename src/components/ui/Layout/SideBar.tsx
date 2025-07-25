@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Calendar, FileText, HelpCircle, School, Users } from "lucide-react";
+import { BookOpen, Calendar, CreditCard, FileText, HelpCircle, School, Users } from "lucide-react";
 import React from "react";
 
 type NavItem = {
@@ -26,6 +26,8 @@ const navs: Record<string, NavItem[]> = {
       { name: "Dashboard", icon: <School className="h-5 w-5" />, href: "/student/dashboard" },
       { name: "My Subjects", icon: <BookOpen className="h-5 w-5" />, href: "/student/subjects" },
       { name: "Doubts", icon: <HelpCircle className="h-5 w-5" />, href: "/student/doubts" },
+      { name :"Payments", icon: <CreditCard className="h-5 w-5"/>, href: "/student/payments" },
+      { name :"Sessions", icon: <Calendar className="h-5 w-5"/>, href: "/student/sessions" },
     ],
 };
 
