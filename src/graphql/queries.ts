@@ -228,6 +228,22 @@ export const GET_LIVE_SESSIONS = `
   }
 `;
 
+export const GET_STUDENT_DOUBTS =`
+  query GetStudentDoubts($studentId: ID!) {
+    getStudentDoubts(studentId:$studentId) {
+      id
+      title
+      content
+      status
+      createdAt
+      subject {
+        id
+        name
+      }
+    }
+  }`
+
+
 export const GET_TEACHER_PROFILE = `
   query GetTeacherProfile($id: ID!) {
     getTeacherProfile(id: $id) {

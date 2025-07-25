@@ -65,7 +65,6 @@ type CalendarEvent = {
 export default function StudentSessionsPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
   const [student, setStudent] = useState<StudentProfile | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +92,6 @@ export default function StudentSessionsPage() {
     if (!userId) return;
     
     const fetchProfile = async () => {
-      setLoadingProfile(true);
       try {
         const { getStudentProfile } = await graphql<{
           getStudentProfile: StudentProfile;
@@ -102,8 +100,6 @@ export default function StudentSessionsPage() {
       } catch (err) {
         console.error(err);
         toast.error("Failed to load student profile");
-      } finally {
-        setLoadingProfile(false);
       }
     };
     fetchProfile();
